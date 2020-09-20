@@ -40,9 +40,7 @@ class Evaluator:
     def plot(self, date):
         try:
             data = self._get_flat_data_until(date)
-            all_days = pd.date_range('1/1/2020',
-                                     periods=len(data),
-                                     freq='D')
+            all_days = pd.date_range('1/1/2020', periods=len(data), freq='D')
             events = pd.Series(data, index=all_days)
             ax = plt.subplot(111)
 
@@ -55,7 +53,8 @@ class Evaluator:
                 print(self.data)
 
     def _get_flat_data_until(self, date):
-        data = self.data.flatten()[date.start_of('year').day_of_year - 1:date.day_of_year]
+        data = self.data.flatten()[date.start_of('year').day_of_week -
+                                   1:date.day_of_year]
         return data
 
     def _add_entry(self, entry):

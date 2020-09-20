@@ -7,26 +7,28 @@ PROJECT = "Thesis"
 DEEP_TAG = {"deep"}
 
 
-def _get_mocked_date(week, day):
+def _get_mocked_date(week, day, starting_day_of_year):
     date = mock.MagicMock(day_of_week=day,
                           week_of_year=week,
-                          day_of_year=day + (week - 1) * 7)
+                          day_of_year=day + (week - 1) * 7 -
+                          starting_day_of_year + 1)
 
     return date
 
 
-def _date_start_of_side_effect(x, week, day):
+def _date_start_of_side_effect(x, week, day, starting_day_of_year):
     if x == 'year':
-        return _get_mocked_date(1, 1)
+        return _get_mocked_date(1, 1, starting_day_of_year)
     elif x == 'week':
-        return _get_mocked_date(week, 1)
+        return _get_mocked_date(week, 1, starting_day_of_year)
     elif x == 'month':
-        return _get_mocked_date(week, 1)
+        return _get_mocked_date(week, 1, starting_day_of_year)
 
 
-def get_mocked_entry(duration, week, day):
-    date = _get_mocked_date(week, day)
-    date.start_of.side_effect = lambda x: _date_start_of_side_effect(x, week, day)
+def get_mocked_entry(duration, week, day, starting_day_of_year=1):
+    date = _get_mocked_date(week, day, starting_day_of_year)
+    date.start_of.side_effect = lambda x: _date_start_of_side_effect(
+        x, week, day, starting_day_of_year)
     mocked = mock.MagicMock(duration=duration, start=date)
 
     return mocked
@@ -100,16 +102,44 @@ class TestEvaluator(TestCase):
                          month1_average)
 
     @mock.patch.object(evaluator.Evaluator, 'END_OF_WEEK', 5)
-    def test_flat(self):
+    def test_flat_monday_first_day(self):
         mocked1 = get_mocked_entry(duration=10, week=1, day=1)
         mocked2 = get_mocked_entry(duration=10, week=1, day=2)
-        mocked3 = get_mocked_entry(duration=10, week=2, day=2)
+        mocked3 = get_mocked_entry(duration=100, week=2, day=2)
         mocked_entries = [mocked1, mocked2, mocked3]
 
         mocked_evaluator = evaluator.Evaluator(mocked_entries)
-        data = mocked_evaluator._get_flat_data_until(mocked1.start)
+        data = mocked_evaluator._get_flat_data_until(mocked3.start)
 
-        self.assertEqual(data[mocked1.start.day_of_year-1], 10)
+        self.assertEqual(data[mocked1.start.day_of_year - 1], 10)
+        self.assertEqual(data[mocked2.start.day_of_year - 1], 10)
+        self.assertEqual(data[mocked3.start.day_of_year - 1], 100)
+        self.assertEqual(len(data), mocked3.start.day_of_year)
+
+    @mock.patch.object(evaluator.Evaluator, 'END_OF_WEEK', 5)
+    def test_flat_friday_first_day(self):
+        starting_day_of_year = 1
+        mocked1 = get_mocked_entry(duration=10,
+                                   week=1,
+                                   day=6,
+                                   starting_day_of_year=starting_day_of_year)
+        mocked2 = get_mocked_entry(duration=10,
+                                   week=2,
+                                   day=1,
+                                   starting_day_of_year=starting_day_of_year)
+        mocked3 = get_mocked_entry(duration=100,
+                                   week=4,
+                                   day=1,
+                                   starting_day_of_year=starting_day_of_year)
+
+        mocked_entries = [mocked1, mocked2, mocked3]
+        mocked_evaluator = evaluator.Evaluator(mocked_entries)
+        data = mocked_evaluator._get_flat_data_until(mocked3.start)
+
+        self.assertEqual(data[mocked1.start.day_of_year - 1], 10)
+        self.assertEqual(data[mocked2.start.day_of_year - 1], 10)
+        self.assertEqual(data[mocked3.start.day_of_year - 1], 100)
+        self.assertEqual(len(data), mocked3.start.day_of_year)
 
     @expectedFailure
     def test_init_single_entry_fail(self):
