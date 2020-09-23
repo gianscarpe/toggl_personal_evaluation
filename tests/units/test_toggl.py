@@ -114,7 +114,6 @@ class TestEvaluator(TestCase):
         self.assertEqual(data[mocked1.start.day_of_year - 1], 10)
         self.assertEqual(data[mocked2.start.day_of_year - 1], 10)
         self.assertEqual(data[mocked3.start.day_of_year - 1], 100)
-        self.assertEqual(len(data), mocked3.start.day_of_year)
 
     @mock.patch.object(evaluator.Evaluator, 'END_OF_WEEK', 5)
     def test_flat_friday_first_day(self):
@@ -139,7 +138,6 @@ class TestEvaluator(TestCase):
         self.assertEqual(data[mocked1.start.day_of_year - 1], 10)
         self.assertEqual(data[mocked2.start.day_of_year - 1], 10)
         self.assertEqual(data[mocked3.start.day_of_year - 1], 100)
-        self.assertEqual(len(data), mocked3.start.day_of_year)
 
     @expectedFailure
     def test_init_single_entry_fail(self):

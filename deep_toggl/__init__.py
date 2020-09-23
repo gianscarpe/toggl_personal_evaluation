@@ -9,6 +9,7 @@ pendulum.week_ends_at(pendulum.SUNDAY)
 
 _evaluator = None
 
+
 def _load_from_toggl(project_name, tags):
     start = pendulum.now().start_of('year')
     project = api.Project.objects.filter(project_name, contain=False)[0]

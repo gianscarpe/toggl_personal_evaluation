@@ -53,8 +53,9 @@ class Evaluator:
                 print(self.data)
 
     def _get_flat_data_until(self, date):
-        data = self.data.flatten()[date.start_of('year').day_of_week -
-                                   1:date.day_of_year]
+
+        data = self.data[:date.week_of_year].flatten(
+        )[date.start_of('year').day_of_week - 1:]
         return data
 
     def _add_entry(self, entry):
