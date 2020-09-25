@@ -16,7 +16,7 @@ def _load_from_toggl(project_name, tags):
     entries = api.TimeEntry.objects.filter(project=project,
                                            start=start,
                                            tags=tags,
-                                           contain=True)
+                                           contain=False)
     return entries
 
 
