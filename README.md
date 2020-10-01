@@ -1,3 +1,7 @@
+[![Build
+Status](https://travis-ci.com/gianscarpe/toggl_personal_evaluation.svg?branch=master)](https://travis-ci.com/gianscarpe/toggl_personal_evaluation)
+[![Coverage Status](https://coveralls.io/repos/github/gianscarpe/toggl_personal_evaluation/badge.svg?branch=developing)](https://coveralls.io/github/gianscarpe/toggl_personal_evaluation?branch=developing)
+
 # DEEP TOGGL
 Open source project based on `toggl_cli` apis to get summaries from your `toggl`
 profile

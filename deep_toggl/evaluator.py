@@ -53,8 +53,7 @@ class Evaluator:
                 print(self.data)
 
     def _get_flat_data_until(self, date):
-
-        data = self.data[:date.week_of_year].flatten(
+        data = self.data[:date.day_of_year].flatten(
         )[date.start_of('year').day_of_week - 1:]
         return data
 
@@ -73,10 +72,31 @@ class Evaluator:
 
     def _get_month_durations(self, date):
         first_week_of_month = date.start_of('month').week_of_year - 1
-        return self.data[first_week_of_month:first_week_of_month + 4, :]
+        last_week_of_month = date.end_of('month').week_of_year - 1
+        return self.data[first_week_of_month:last_week_of_month, :]
 
     def _get_week_average(self, date):
         return self._get_week_durations(date)[:Evaluator.END_OF_WEEK].mean()
+
+    def _get_week_average_until(self, date):
+        return self._get_until(date.end_of_week, start_of='week').mean()
+
+    def _get_month_average_until(self, date):
+        return self._get_until(date, start_of='month').mean()
+
+    def _get_until(self, date, start_of):
+        cases = {
+            'week': date.day_of_week,
+            'month': date.day,
+            'year': date.day_of_year
+        }
+
+        end = cases[start_of]
+        data = self.data[
+            date.start_of(start_of).week_of_year -
+            1:date.week_of_year, :Evaluator.END_OF_WEEK].flatten()[:end]
+
+        return data
 
     def _get_month_average(self, date):
         return self._get_month_durations(
