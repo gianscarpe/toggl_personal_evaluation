@@ -4,7 +4,7 @@ import deep_toggl
 import deep_toggl.evaluator as evaluator
 
 PROJECT = "Thesis"
-DEEP_TAG = {"deep"}
+DEEP_TAG = "deep"
 
 
 def _get_mocked_date(week, day, starting_day_of_year):
@@ -25,10 +25,19 @@ def _date_start_of_side_effect(x, week, day, starting_day_of_year):
         return _get_mocked_date(week, 1, starting_day_of_year)
 
 
+def _date_end_of_side_effect(x, week, day, starting_day_of_year):
+    if x == 'week':
+        return _get_mocked_date(week, 6, starting_day_of_year)
+    elif x == 'month':
+        return _get_mocked_date(week+4, 1, starting_day_of_year)
+    
+
 def get_mocked_entry(duration, week, day, starting_day_of_year=1):
     date = _get_mocked_date(week, day, starting_day_of_year)
     date.start_of.side_effect = lambda x: _date_start_of_side_effect(
         x, week, day, starting_day_of_year)
+    date.end_of.side_effect = lambda x: _date_end_of_side_effect(
+        x, week, day, starting_day_of_year)    
     mocked = mock.MagicMock(duration=duration, start=date)
 
     return mocked
@@ -46,7 +55,7 @@ class TestToggl(TestCase):
             mocked_api.TimeEntry.objects.filter.assert_called_once()
             _, kwargs = mocked_api.TimeEntry.objects.filter.call_args
             self.assertEqual(kwargs['project'], 'testing')
-            self.assertEqual(kwargs['tags'], DEEP_TAG)
+            self.assertEqual(kwargs['tags'], {DEEP_TAG})
 
 
 class TestEvaluator(TestCase):

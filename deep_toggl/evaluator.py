@@ -73,10 +73,13 @@ class Evaluator:
     def _get_month_durations(self, date):
         first_week_of_month = date.start_of('month').week_of_year - 1
         last_week_of_month = date.end_of('month').week_of_year - 1
-        return self.data[first_week_of_month - 1:last_week_of_month, :]
+        return self.data[first_week_of_month:last_week_of_month, :]
 
     def _get_week_average(self, date):
-        return self._get_until(date, start_of='week').mean()
+        return self._get_week_durations(date)[:Evaluator.END_OF_WEEK].mean()
+
+    def _get_week_average_until(self, date):
+        return self._get_until(date.end_of_week, start_of='week').mean()
 
     def _get_month_average_until(self, date):
         return self._get_until(date, start_of='month').mean()
@@ -97,4 +100,4 @@ class Evaluator:
 
     def _get_month_average(self, date):
         return self._get_month_durations(
-            date)[:date.week_of_month, :Evaluator.END_OF_WEEK].mean()
+            date)[:, :Evaluator.END_OF_WEEK].mean()
