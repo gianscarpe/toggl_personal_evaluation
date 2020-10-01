@@ -2,6 +2,8 @@
 omit =
     # omit anything in a .local directory anywhere
     */.local/*
+    */tests/*
+    */site-packages/*
     # omit everything in /usr
     /usr/*
     # omit this single file

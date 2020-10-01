@@ -52,3 +52,4 @@ docs/_build/
 \#*
 *~
 /.#test-requirments.txt
+!.travis.yml

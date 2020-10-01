@@ -10,6 +10,11 @@ setuptools.setup(
     entry_points = {
         'console_scripts': ['deep_toggl = deep_toggl:main']
     },
+    install_requires=[
+        'pendulum',
+        'togglCli',
+        'calmap'
+    ],
     packages=setuptools.find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3",
