@@ -1,20 +1,25 @@
+import re
+
 import setuptools
+
+with open("README.md", "r") as fh:
+    long_description = fh.read()
+    version = re.search(
+        r'^__version__\s*=\s*"(.*)"',
+        open("deep_toggl/__init__.py").read(),
+        re.MULTILINE,
+    ).group(1)
 
 setuptools.setup(
     name="deep_toggl",
-    version="0.1",
+    version=version,
     author="gianscarpe",
     author_email="me@scarpellini.dev",
-    description="Package for managing deep work",
+    description="Simple tool for toggl summary",
+    long_description=long_description,
     url="https://github.com/gianscarpe/sampleproject",
-    entry_points = {
-        'console_scripts': ['deep_toggl = deep_toggl:main']
-    },
-    install_requires=[
-        'pendulum',
-        'togglCli',
-        'calmap'
-    ],
+    entry_points={'console_scripts': ['deep_toggl = deep_toggl:main']},
+    install_requires=['pendulum', 'togglCli', 'calmap'],
     packages=setuptools.find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3",

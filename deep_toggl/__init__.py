@@ -5,6 +5,8 @@ from .config import get_config
 from .evaluator import Evaluator
 from .summarizer import Summarizer
 
+__version__ = "0.3"
+
 pendulum.week_starts_at(pendulum.MONDAY)
 pendulum.week_ends_at(pendulum.SUNDAY)
 
