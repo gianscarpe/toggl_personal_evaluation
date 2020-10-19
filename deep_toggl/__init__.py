@@ -3,6 +3,9 @@ from toggl import api
 
 from .config import get_config
 from .evaluator import Evaluator
+from .summarizer import Summarizer
+
+__version__ = "0.3"
 
 pendulum.week_starts_at(pendulum.MONDAY)
 pendulum.week_ends_at(pendulum.SUNDAY)
@@ -31,5 +34,6 @@ def get_evaluator():
 
 def main():
     today = pendulum.now()
-    get_evaluator().print_averages(today)
-    get_evaluator().plot(today)
+    summarizer = Summarizer(get_evaluator())
+    summarizer.print_averages(today)
+    summarizer.plot(today)    

@@ -8,7 +8,9 @@ DEEP_TAG = "deep"
 
 
 def _get_mocked_date(week, day, starting_day_of_year):
+    day_of_year = day + (week - 1) * 7 - starting_day_of_year + 1
     date = mock.MagicMock(day_of_week=day,
+                          day=day_of_year//30,
                           week_of_year=week,
                           day_of_year=day + (week - 1) * 7 -
                           starting_day_of_year + 1)
@@ -22,7 +24,14 @@ def _date_start_of_side_effect(x, week, day, starting_day_of_year):
     elif x == 'week':
         return _get_mocked_date(week, 1, starting_day_of_year)
     elif x == 'month':
-        return _get_mocked_date(week, 1, starting_day_of_year)
+        return _get_mocked_date(week//4 + 1, 1, starting_day_of_year)
+
+
+def _date_end_of_side_effect(x, week, day, starting_day_of_year):
+    if x == 'week':
+        return _get_mocked_date(week, 6, starting_day_of_year)
+    elif x == 'month':
+        return _get_mocked_date(week + 4, 1, starting_day_of_year)
 
 
 def _date_end_of_side_effect(x, week, day, starting_day_of_year):
@@ -37,7 +46,7 @@ def get_mocked_entry(duration, week, day, starting_day_of_year=1):
     date.start_of.side_effect = lambda x: _date_start_of_side_effect(
         x, week, day, starting_day_of_year)
     date.end_of.side_effect = lambda x: _date_end_of_side_effect(
-        x, week, day, starting_day_of_year)    
+        x, week, day, starting_day_of_year)
     mocked = mock.MagicMock(duration=duration, start=date)
 
     return mocked
@@ -148,6 +157,55 @@ class TestEvaluator(TestCase):
         self.assertEqual(data[mocked2.start.day_of_year - 1], 10)
         self.assertEqual(data[mocked3.start.day_of_year - 1], 100)
 
+    @mock.patch.object(evaluator.Evaluator, 'END_OF_WEEK', 5)
+    def test_get_until_week_average(self):
+        starting_day_of_year = 1
+        mocked1 = get_mocked_entry(duration=10,
+                                   week=1,
+                                   day=3,
+                                   starting_day_of_year=starting_day_of_year)
+        mocked2 = get_mocked_entry(duration=10,
+                                   week=2,
+                                   day=1,
+                                   starting_day_of_year=starting_day_of_year)
+
+        mocked3 = get_mocked_entry(duration=100,
+                                   week=4,
+                                   day=1,
+                                   starting_day_of_year=starting_day_of_year)
+        expected_average = mocked2.duration
+
+        mocked_entries = [mocked1, mocked2, mocked3]
+        mocked_evaluator = evaluator.Evaluator(mocked_entries)
+        result = mocked_evaluator._get_week_average_until(mocked2.start)
+
+        self.assertEqual(result, expected_average)
+
+    @mock.patch.object(evaluator.Evaluator, 'END_OF_WEEK', 5)
+    def test_get_until_month_average(self):
+        starting_day_of_year = 1
+        mocked1 = get_mocked_entry(duration=10,
+                                   week=1,
+                                   day=3,
+                                   starting_day_of_year=starting_day_of_year)
+        mocked2 = get_mocked_entry(duration=10,
+                                   week=2,
+                                   day=1,
+                                   starting_day_of_year=starting_day_of_year)
+
+        mocked3 = get_mocked_entry(duration=100,
+                                   week=4,
+                                   day=1,
+                                   starting_day_of_year=starting_day_of_year)
+        expected_average = (mocked1.duration + mocked2.duration) / 6
+
+        mocked_entries = [mocked1, mocked2, mocked3]
+        mocked_evaluator = evaluator.Evaluator(mocked_entries)
+        result = mocked_evaluator._get_month_average_until(mocked2.start)
+
+        self.assertEqual(result, expected_average)
+
+        
     @expectedFailure
     def test_init_single_entry_fail(self):
         mocked1 = get_mocked_entry(10, 10, 10)
