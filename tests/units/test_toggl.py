@@ -34,6 +34,13 @@ def _date_end_of_side_effect(x, week, day, starting_day_of_year):
         return _get_mocked_date(week + 4, 1, starting_day_of_year)
 
 
+def _date_end_of_side_effect(x, week, day, starting_day_of_year):
+    if x == 'week':
+        return _get_mocked_date(week, 6, starting_day_of_year)
+    elif x == 'month':
+        return _get_mocked_date(week+4, 1, starting_day_of_year)
+    
+
 def get_mocked_entry(duration, week, day, starting_day_of_year=1):
     date = _get_mocked_date(week, day, starting_day_of_year)
     date.start_of.side_effect = lambda x: _date_start_of_side_effect(
