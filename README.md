@@ -12,7 +12,7 @@ profile
 # INSTALL
 1. Clone repositoy at https://github.com/gianscarpe/toggl_personal_evaluation
 2. Install using pip
-   `python -m pip install .`
+   `pip install deep_toggl`
 
 # USE
 From CLI, call `deep_toggl`

@@ -13,7 +13,7 @@ setuptools.setup(
     name="deep_toggl",
     version=version,
     author="gianscarpe",
-    author_email="me@scarpellini.dev",
+    author_email="me@scarpellini.dev"
     long_description_content_type="text/markdown",
     description="Simple tool for toggl summary",
     long_description=long_description,

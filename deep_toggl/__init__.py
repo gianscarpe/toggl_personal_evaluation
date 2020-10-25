@@ -47,3 +47,4 @@ def main():
     summarizer = Summarizer(get_evaluator())
     summarizer.print_averages(today)
     # summarizer.plot(today)
+

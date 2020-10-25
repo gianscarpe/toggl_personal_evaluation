@@ -18,6 +18,7 @@ def _get_mocked_date(week, day, starting_day_of_year):
         day_of_year=day + (week - 1) * 7 - starting_day_of_year + 1,
     )
 
+
     return date
 
 
@@ -152,7 +153,7 @@ class TestEvaluator(TestCase):
         self.assertEqual(data[mocked1.start.day_of_year - 1], 10)
         self.assertEqual(data[mocked2.start.day_of_year - 1], 10)
         self.assertEqual(data[mocked3.start.day_of_year - 1], 100)
-
+        
     @mock.patch.object(evaluator.Evaluator, "END_OF_WEEK", 5)
     def test_get_until_week_average(self):
         starting_day_of_year = 1
@@ -187,6 +188,7 @@ class TestEvaluator(TestCase):
         mocked3 = get_mocked_entry(
             duration=100, week=4, day=1, starting_day_of_year=starting_day_of_year
         )
+
         expected_average = (mocked1.duration + mocked2.duration) / 6
 
         mocked_entries = [mocked1, mocked2, mocked3]
