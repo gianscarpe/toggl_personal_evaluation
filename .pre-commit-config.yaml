@@ -1,0 +1,53 @@
+repos:
+  - repo: local
+    hooks:
+      - id: isort
+        name: isort
+        stages: [commit]
+        language: system
+        entry: pipenv run isort
+        types: [python]
+
+      - id: black
+        name: black
+        stages: [commit]
+        language: system
+        entry: pipenv run black
+        types: [python]
+
+      - id: flake8
+        name: flake8
+        stages: [commit]
+        language: system
+        entry: pipenv run flake8
+        types: [python]
+        exclude: setup.py
+
+      - id: check-mypy
+        name: mypy
+        stages: [commit]
+        language: system
+        entry: pipenv run mypy
+        types: [python]
+        files: .
+
+      - id: unittest
+        name: test
+        stages: [commit]
+        language: system
+        entry: python -m unittest discover tests
+        types: [python]
+
+      - id: run-coverage
+        name: coverage
+        stages: [commit]
+        language: system
+        entry: coverage run -m unittest discover tests
+        types: [python]
+
+      - id: run-coverage
+        name: coverage
+        stages: [commit]
+        language: system
+        entry: coverage report --fail-under=20
+        types: [python]
