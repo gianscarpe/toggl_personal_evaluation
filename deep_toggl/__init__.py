@@ -15,27 +15,27 @@ _evaluator = None
 
 def _load_from_toggl(project_name, tag, token, timezone):
     config = utils.Config.factory(
-        None
-    )  # Without None it will load the default config file
+        None)  # Without None it will load the default config file
     config.api_token = token
     config.timezone = timezone
 
-    start = pendulum.now().start_of("year")
-    project = api.Project.objects.filter(project_name, contain=False, config=config)[0]
-    entries = api.TimeEntry.objects.filter(
-        project=project, start=start, tags={tag}, config=config, contain=False
-    )
+    start = pendulum.now().start_of('year')
+    project = api.Project.objects.filter(project_name,
+                                         contain=False,
+                                         config=config)[0]
+    entries = api.TimeEntry.objects.filter(project=project,
+                                           start=start,
+                                           tags={tag},
+                                           config=config,
+                                           contain=False)
     return entries
 
 
 def get_evaluator():
     config = get_config()
-    entries = _load_from_toggl(
-        config["app"]["project"],
-        config["app"]["tag"],
-        config["toggl"]["token"],
-        config["toggl"]["timezone"],
-    )
+    entries = _load_from_toggl(config['app']['project'], config['app']['tag'],
+                               config['toggl']['token'],
+                               config['toggl']['timezone'])
     global _evaluator
     if _evaluator is None:
         _evaluator = Evaluator(entries)
@@ -46,5 +46,4 @@ def main():
     today = pendulum.now()
     summarizer = Summarizer(get_evaluator())
     summarizer.print_averages(today)
-
-    summarizer.plot(today)
+    # summarizer.plot(today)
