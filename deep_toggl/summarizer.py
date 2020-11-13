@@ -6,7 +6,7 @@ from matplotlib import pyplot as plt
 
 def format_time(time):
     time = time / 60
-    return '{0:01.0f}:{1:02.0f} hours'.format(*divmod(time, 60))
+    return "{0:01.0f}:{1:02.0f} hours".format(*divmod(time, 60))
 
 
 class Summarizer:
@@ -18,11 +18,9 @@ class Summarizer:
         avg_deep_work_this_week = self.evaluator._get_week_average(date)
         avg_deep_work_this_month = self.evaluator._get_month_average(date)
 
-        print(
-            f"AVG deep work this week {format_time(avg_deep_work_this_week)}")
-        print(
-            f"AVG deep work this month {format_time(avg_deep_work_this_month)}"
-        )
+        print(f"Summary for {self.evaluator.name}")
+        print(f"AVG deep work this week {format_time(avg_deep_work_this_week)}")
+        print(f"AVG deep work this month {format_time(avg_deep_work_this_month)}")
         print(f"Deep work for today {format_time(deep_work_today)}")
 
         if deep_work_today < avg_deep_work_this_month:
@@ -33,7 +31,7 @@ class Summarizer:
     def plot(self, date):
         try:
             data = self.evaluator._get_flat_data_until(date)
-            all_days = pd.date_range('1/1/2020', periods=len(data), freq='D')
+            all_days = pd.date_range("1/1/2020", periods=len(data), freq="D")
             events = pd.Series(data, index=all_days)
             ax = plt.subplot(111)
 

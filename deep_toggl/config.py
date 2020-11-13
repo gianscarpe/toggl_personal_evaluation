@@ -22,8 +22,15 @@ def get_api_token():
 
 def get_config():
     if os.path.exists(DEFAULT_CONFIG_PATH):
-        config = configparser.ConfigParser()
-        config.read(DEFAULT_CONFIG_PATH)
+        reading_config = configparser.RawConfigParser()
+        reading_config.read(DEFAULT_CONFIG_PATH)
+        config = {}
+        config = {
+            "tags": reading_config["app"]["tags"].split(","),
+            "projects": reading_config["app"]["projects"].split(","),
+            "token": reading_config["toggl"]["token"],
+            "timezone": reading_config["toggl"]["timezone"],
+        }
     else:
         config = setup()
     return config
@@ -37,12 +44,12 @@ def setup():
     questions = [
         inquirer.Text("name", message="What's your name?"),
         inquirer.Text(
-            "tag",
-            message="What's your deep tag?",
+            "tags",
+            message="What tags to track?",
         ),
         inquirer.Text(
-            "project",
-            message="Which project to track?",
+            "projects",
+            message="Which projects to track?",
         ),
     ]
     answers = inquirer.prompt(questions, theme=GreenPassion())
