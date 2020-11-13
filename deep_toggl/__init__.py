@@ -27,20 +27,23 @@ def _load_from_toggl(project_name: str, tags: list, token, timezone) -> list:
     return project_entries
 
 
-def get_evaluator(project_name, tags, token, timezone):
-    entries = _load_from_toggl(project_name, tags, token, timezone)
-    _evaluator = Evaluator(project_name, entries)
+def get_evaluator(project_name, config_project, config_app):
+    entries = _load_from_toggl(
+        project_name,
+        config_project["tags"],
+        config_app["token"],
+        config_app["timezone"],
+    )
+    _evaluator = Evaluator(name=project_name, entries=entries)
     return _evaluator
 
 
 def main():
     config = get_config()
-    projects = config["projects"]
     today = pendulum.now()
-    for project_name in projects:
-        evaluator = get_evaluator(
-            project_name, config["tags"], config["token"], config["timezone"]
-        )
+
+    for name, config_project in config["projects"].items():
+        evaluator = get_evaluator(name, config_project, config["app"])
         summarizer = Summarizer(evaluator)
         summarizer.print_averages(today)
-    # summarizer.plot(today)
+        summarizer.plot(today)

@@ -4,7 +4,7 @@ import numpy as np
 class Evaluator:
     END_OF_WEEK = 5
 
-    def __init__(self, name, entries):
+    def __init__(self, entries: list, name: str = "Evaluator"):
         self.name = name
         self.init_data(entries)
 

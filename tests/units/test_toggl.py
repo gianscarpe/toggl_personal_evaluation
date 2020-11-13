@@ -4,7 +4,7 @@ import deep_toggl
 import deep_toggl.evaluator as evaluator
 
 PROJECT = "Thesis"
-DEEP_TAG = "deep"
+DEEP_TAG = ["deep"]
 TOKEN = "asdf"
 TZ = "utc"
 
@@ -62,7 +62,7 @@ class TestToggl(TestCase):
             mocked_api.TimeEntry.objects.filter.assert_called_once()
             _, kwargs = mocked_api.TimeEntry.objects.filter.call_args
             self.assertEqual(kwargs["project"], "testing")
-            self.assertEqual(kwargs["tags"], {DEEP_TAG})
+            self.assertEqual(kwargs["tags"], {*DEEP_TAG})
 
 
 class TestEvaluator(TestCase):

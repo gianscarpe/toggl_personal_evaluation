@@ -36,9 +36,9 @@ class Summarizer:
             ax = plt.subplot(111)
 
             calmap.yearplot(events, year=2020, ax=ax)
-            plt.title("Deep Work Calendar")
+            plt.title(f"Deep Work Calendar for {self.evaluator.name}")
             plt.show()
         except Exception as ex:
             print(ex)
             with np.printoptions(precision=3, suppress=True):
-                print(self.data)
+                print(data)
