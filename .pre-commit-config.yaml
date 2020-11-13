@@ -30,24 +30,3 @@ repos:
         entry: pipenv run mypy
         types: [python]
         files: .
-
-      - id: unittest
-        name: test
-        stages: [commit]
-        language: system
-        entry: python -m unittest discover tests
-        types: [python]
-
-      - id: run-coverage
-        name: coverage
-        stages: [commit]
-        language: system
-        entry: coverage run -m unittest discover tests
-        types: [python]
-
-      - id: run-coverage
-        name: coverage
-        stages: [commit]
-        language: system
-        entry: coverage report --fail-under=20
-        types: [python]
