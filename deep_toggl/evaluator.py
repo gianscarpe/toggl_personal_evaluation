@@ -1,5 +1,7 @@
 import numpy as np
 
+from .togglwrapper import load_from_toggl
+
 
 class Evaluator:
     END_OF_WEEK = 5
@@ -64,3 +66,14 @@ class Evaluator:
 
     def _get_month_average(self, date):
         return self._get_month_durations(date)[:, : Evaluator.END_OF_WEEK].mean()
+
+
+def get_evaluator(project_name, config_project, config_app):
+    entries = load_from_toggl(
+        project_name=project_name,
+        tags=config_project["tags"],
+        token=config_app["token"],
+        timezone=config_app["timezone"],
+    )
+    evaluator = Evaluator(name=project_name, entries=entries)
+    return evaluator
