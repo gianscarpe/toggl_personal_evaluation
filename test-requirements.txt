@@ -1,3 +1,6 @@
 coverage
 coveralls
 mock
+pre-commit
+mypy
+isort

@@ -7,6 +7,7 @@ from toggl import api, utils
 from toggl.utils.others import are_credentials_valid
 
 DEFAULT_CONFIG_PATH = os.path.expanduser("~/.deeptogglrc")
+ANY_TAG = "any"
 
 
 def _store(cfg, config_path=DEFAULT_CONFIG_PATH):
@@ -74,6 +75,7 @@ def setup():
 
     projects_names = [p.name for p in projects]
     tags_names = [x.name for x in tags]
+    tags_names.append(ANY_TAG)
 
     questions = [
         inquirer.Checkbox(
