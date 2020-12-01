@@ -68,8 +68,3 @@ class TestLauncher(TestCase):
         mocked_summ_project.assert_has_calls(
             [mock.call("test1", mocked_config, mocked_now)]
         )
-
-    def test_init(self):
-        with mock.patch.object(deep_toggl, "main"):
-            with mock.patch.object(deep_toggl, "__name__", "__main__"):
-                deep_toggl()
