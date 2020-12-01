@@ -1,4 +1,4 @@
-from deep_toggl import main
+import deep_toggl
 
-if __name__ == '__main__':
-    main()
+if __name__ == "__main__":
+    deep_toggl.main()
