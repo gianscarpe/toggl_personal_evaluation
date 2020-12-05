@@ -2,7 +2,7 @@ import argparse
 
 import pendulum
 
-from .config import get_config
+from .config import get_config, setup
 from .evaluator import get_evaluator
 from .summarizer import Summarizer
 
@@ -16,6 +16,7 @@ pendulum.week_ends_at(pendulum.SUNDAY)
 def summarize_project(name, config, date: pendulum.Date):
     evaluator = get_evaluator(name, config["projects"][name], config["app"])
     summarizer = Summarizer(evaluator)
+
     summarizer.print_averages(date)
     summarizer.plot(date)
 
@@ -27,21 +28,35 @@ def summarize_all(config, date: pendulum.Date):
 
 def summarize_dispatch(project_name):
     today = pendulum.now()
-    config = get_config()
+    cfg = get_config()
 
     if project_name == "all":
-        summarize_all(config, today)
+        summarize_all(cfg, today)
     else:
-        summarize_project(project_name, config, today)
+        summarize_project(project_name, cfg, today)
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(description="Deep toggl")
+    parser.add_argument(
+        "project", nargs="?", type=str, default="all", help="Project name. Defaults to `all`",
+    )
+    parser.add_argument(
+        "--setup",
+        action="store_true",
+        default=False,
+        help="Set-up the tool. If a configuration is presents, it will be overwritten.",
+    )
+    return parser.parse_args()
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Deep toggl")
-    parser.add_argument("project", metavar="project", type=str, help="Project name")
-
-    args = parser.parse_args()
-    project_name = args.project
-    summarize_dispatch(project_name)
+    args = parse_args()
+    if args.setup:
+        _ = setup()
+    else:
+        project_name = args.project
+        summarize_dispatch(project_name)
 
 
 if __name__ == "__main__":
