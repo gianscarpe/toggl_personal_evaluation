@@ -4,17 +4,19 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
+black = "==19.10b0"
+coverage = "*"
+isort = "*"
+flake8 = "*"
+mypy = "*"
+pre-commit = "==2.4.0"
+pylint = "*"
 
 [packages]
-calmap = "*"
 pendulum = "*"
-pipfile = "*"
 pandas = "==1.0"
-coverage = "*"
-coveralls = "*"
-mock = "*"
-pre-commit = "*"
 togglCli = "*"
+calmap = "*"
 
 [requires]
 python_version = "3.7"
