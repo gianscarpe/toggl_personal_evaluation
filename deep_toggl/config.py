@@ -1,6 +1,5 @@
 import configparser
 import os
-from typing import List
 
 import inquirer
 from inquirer.themes import GreenPassion
@@ -32,7 +31,8 @@ def _parse(cfg: configparser.ConfigParser) -> dict:
 
 def get_api_token():
     return inquirer.shortcuts.password(
-        message="Your API token", validate=lambda _, current: are_credentials_valid(api_token=current),
+        message="Your API token",
+        validate=lambda _, current: are_credentials_valid(api_token=current),
     )
 
 
@@ -50,7 +50,9 @@ class TogglWrapper:
         self._set_toggl(token, tz)
 
     def _set_toggl(self, token: str, tz: str = "utc"):
-        config = utils.Config.factory(None)  # Without None it will load the default config file
+        config = utils.Config.factory(
+            None
+        )  # Without None it will load the default config file
         config.api_token = token
         config.timezone = "utc"
         self._config = config
@@ -64,41 +66,41 @@ class TogglWrapper:
         return result
 
 
-def get_chosen_projects(toggl_wrapper: TogglWrapper) -> List[str]:
-    projects_names = [x.name for x in toggl_wrapper.get_all_projects()]
-    while True:
-        questions = [
-            inquirer.Checkbox("projects", message="Which projects to track?", choices=projects_names,),
-        ]
-        answers = inquirer.prompt(questions, theme=GreenPassion())
-        projects_chosen = answers["projects"]
-        if len(projects_chosen) != 0:
-            return projects_chosen
-        print("You have to pick at least one project.")
-
-
-def get_chosen_tags(toggl_wrapper: TogglWrapper, chosen_project: str) -> List[str]:
-    tags_names = [ANY_TAG]
-    tags_names.extend(x.name for x in toggl_wrapper.get_all_tags())
-    questions = [inquirer.Checkbox("tags", message=f"What tags to track for {chosen_project}?", choices=tags_names,)]
-    answers = inquirer.prompt(questions, theme=GreenPassion())
-    return answers["tags"]
-
-
 def setup():
     config = configparser.ConfigParser()
     token = get_api_token()
-    toggl_wrap = TogglWrapper(token)
+    tg = TogglWrapper(token)
+    projects = tg.get_all_projects()
+    tags = tg.get_all_tags()
 
-    chosen_projects = get_chosen_projects(toggl_wrap)
-    for chosen_project in chosen_projects:
-        chosen_tags = get_chosen_tags(toggl_wrap, chosen_project)
-        config[chosen_project] = {}
-        config[chosen_project]["tags"] = ",".join(chosen_tags)
+    projects_names = [p.name for p in projects]
+    tags_names = [x.name for x in tags]
+    tags_names.append(ANY_TAG)
+
+    questions = [
+        inquirer.Checkbox(
+            "projects", message="Which projects to track?", choices=projects_names
+        ),
+    ]
+    answers = inquirer.prompt(questions, theme=GreenPassion())
+    projects_chosen = answers["projects"]
+
+    for project_chosen in projects_chosen:
+        questions = [
+            inquirer.Checkbox(
+                "tags",
+                message=f"What tags to track for {project_chosen}?",
+                choices=tags_names,
+            )
+        ]
+        answers = inquirer.prompt(questions, theme=GreenPassion())
+
+        config[project_chosen] = {}
+        config[project_chosen]["tags"] = ",".join(answers["tags"])
 
     config["app"] = {
         "token": token,
-        "projects": ",".join(chosen_projects),
+        "projects": ",".join(projects_chosen),
         "timezone": "utc",
     }
     _store(config)
